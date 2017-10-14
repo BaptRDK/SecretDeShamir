@@ -1,2 +1,2 @@
 # SecretDeShamir
-Implementation du secret partagé de Shamir, en Python.
+Implementation du secret partagé de Shamir, en C.
