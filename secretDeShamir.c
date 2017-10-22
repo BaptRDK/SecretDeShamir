@@ -4,8 +4,6 @@
 
 int constrPolynom(mpz_t* factors, int degree, const mpz_t secret)
 {
-	//we allocate an mpz_t array of size degree
-	factors = malloc(sizeof(mpz_t) * degree);
 	int i;
 	char* seed;
 	mpz_t seedMpz;
@@ -34,15 +32,43 @@ int constrPolynom(mpz_t* factors, int degree, const mpz_t secret)
 		mpz_init(factors[i]);
 		mpz_urandomb(factors[i], state, 32);
 	}
-
+	
+	//clearing memory
 	close(randomFic);
 	mpz_clear(seedMpz);
 	return(0);
 }
 
-int resPolynom(mpz_t* results, const mpz_t polynom, int nbPart)
+int resPolynom(mpz_t* results, const mpz_t* polynom, int degree, int nbPart)
 {
-	
+	int i;
+	int j;
 
+	mpz_t buffer;
+	mpz_init(buffer);
+	
+	//for each part to create (ie n)	
+	for(i=0; i<nbPart; i++)
+	{
+		
+		mpz_init(results[i]);
+		mpz_set_ui(results[i], 0);
+		
+		//we resolve the polynom of degree (degree-1)(ie k)
+		for(j=0; j < degree; j++)
+		{
+			mpz_set_ui(buffer, 0);
+			
+			//we multiply the factor with x^j (x being just 1 to nbpart)
+			mpz_mul_ui(buffer, polynom[j], (unsigned long int)(pow((double)(i+1), (double)j)));
+
+			mpz_add(results[i], results[i], buffer);
+		}
+
+	}	
+	
+	//clearing memory
+	mpz_clear(buffer);
+	
 	return(0);
 }
